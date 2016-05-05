@@ -6,6 +6,10 @@ type Length = float
 
 type Stack = (Position*Rotation) list
 
+type Line = { From : Position
+              To : Position
+            }
+
 let push (x:(Position*Rotation)) (stack:Stack) : Stack =
     x::stack
 
@@ -19,14 +23,19 @@ let calcEndPos (x,y) rotation length =
     endX, endY
 
 
-//open System.Drawing
-//
-//let i = new Bitmap(300,300)
-//let g = Graphics.FromImage i
-//
-//let br = new SolidBrush(Color.IndianRed)
-//
-//g.FillRectangle(br, 0,0,300,300)
-//g.Flush()
-//
-//i.Save "x.png"
+open System.Drawing
+
+let DrawLine (g:Graphics) (p:Pen) line =
+  g.DrawLine(p, fst line.From |> float32, snd line.From |> float32, fst line.To |> float32, snd line.To |> float32)
+
+let draw (lines:Line seq) =
+  let pen = new Pen(Color.Blue)
+  let br = new SolidBrush(Color.White)
+
+  let i = new Bitmap(600,400)
+  let g = Graphics.FromImage i
+  lines
+  |> Seq.iter (DrawLine g pen)
+
+  g.Flush()
+  i
